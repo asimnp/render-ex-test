@@ -42,15 +42,20 @@ app.post("/api/persons", (request, response) => {
       .json({ error: "Name and number fields are missing" });
   }
 
-  const person = {
+  const person = persons.find((p) => p.name === body.name);
+
+  if (person)
+    return response.status(400).json({ error: "Name must be unique" });
+
+  const newPerson = {
     id: generateId(),
     name: body.name,
     number: body.number,
   };
 
-  persons = persons.concat(person);
+  persons = persons.concat(newPerson);
 
-  return response.json(person);
+  return response.json(newPerson);
 });
 
 app.get("/api/persons/:id", (request, response) => {
